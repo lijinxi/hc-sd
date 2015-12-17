@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.sd.dao.mapper.BlCoProcessMapper">
+	<resultMap id="BaseResultMap" type="com.hc.scm.sd.dao.entity.BlCoProcess">
+		<id column="line_id" property="lineId" jdbcType="BIGINT" />
+		<result column="brand_no" property="brandNo" jdbcType="VARCHAR" />
+		<result column="division_no" property="divisionNo" jdbcType="VARCHAR" />
+		<result column="seq_no" property="seqNo" jdbcType="INTEGER" />
+		<result column="bill_line_status" property="billLineStatus"
+			jdbcType="VARCHAR" />
+		<result column="order_date" property="orderDate" jdbcType="DATE" />
+		<result column="deliver_date" property="deliverDate" jdbcType="DATE" />
+		<result column="contract_no" property="contractNo" jdbcType="VARCHAR" />
+		<result column="order_type" property="orderType" jdbcType="VARCHAR" />
+		<result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+		<result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+		<result column="customer_no" property="customerNo" jdbcType="VARCHAR" />
+		<result column="size_no" property="sizeNo" jdbcType="VARCHAR" />
+		<result column="size_qty" property="sizeQty" jdbcType="INTEGER" />
+		<result column="size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+		<result column="unit_price" property="unitPrice" jdbcType="DECIMAL" />
+		<result column="packing_qty" property="packingQty" jdbcType="INTEGER" />
+		<result column="box_qty" property="boxQty" jdbcType="INTEGER" />
+		<result column="packing_type" property="packingType" jdbcType="VARCHAR" />
+		<result column="point_no" property="pointNo" jdbcType="VARCHAR" />
+		<result column="bill_company" property="billCompany" jdbcType="VARCHAR" />
+		<result column="process_result" property="processResult"
+			jdbcType="VARCHAR" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="modifier" property="modifier" jdbcType="VARCHAR" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="BlCoProcessModelMap" type="com.hc.scm.sd.dao.model.BlCoProcessModel">
+		<id column="brand_cname" property="brandCname" jdbcType="VARCHAR" />
+		<result column="division_name" property="divisionName"
+			jdbcType="VARCHAR" />
+		<result column="material_name" property="materialName"
+			jdbcType="VARCHAR" />
+		<result column="customer_name" property="customerName"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<sql id="Base_Column_List">
+		line_id, brand_no, division_no, seq_no, bill_line_status, order_date,
+		deliver_date,
+		contract_no, order_type, order_no, material_no, customer_no, size_no, size_qty,
+		size_type_no,
+		unit_price, packing_qty, box_qty, packing_type, point_no, bill_company,
+		process_result,
+		creator, create_time, modifier, modify_time, remarks
+	</sql>
+	<sql id="BlCoProcessModelMap_Column_List">
+		a.line_id as lineId, a.brand_no as brandNo,b.brand_cname as brandCname,
+		a.division_no as divisionNo,
+		c.division_name as divisionName,seq_no as
+		seqNo, bill_line_status as billlineStatus,
+		order_date as orderDate, deliver_date as deliverDate,contract_no as contractNo,
+		order_type as orderType,
+		a.order_no as orderNo, a.material_no as materialNo,e.material_name as
+		materialName,a.customer_no as customerNo,
+		d.customer_name as
+		customerName ,a.size_no as sizeNo,
+		a.size_qty as sizeQty, a.size_type_no as sizeTypeNo, a.unit_price as unitPrice,
+		a.packing_qty as packingQty,
+		a.box_qty as boxQty, a.packing_type as packingType, a.point_no as pointNo,
+		a.bill_company as billCompany,
+		a.process_result as processResult, a.creator as creator, a.create_time as createTime,
+		a.modifier as modifier,
+		a.modify_time as modifyTime, a.remarks as remarks
+	</sql>
+
+	<sql id="condition">
+		<if test="null!=params">
+			<if test="null!=params.queryCondition and ''!=params.queryCondition">
+				${params.queryCondition}
+			</if>
+		</if>
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bl_co_process
+		WHERE line_id = #{lineId,jdbcType=BIGINT}
+	</select>
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) as s FROM bl_co_process WHERE 1=1
+		<include refid="condition" />
+	</select>
+	<select id="selectByPage" resultMap="BaseResultMap"
+		parameterType="map">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bl_co_process WHERE 1=1
+		<include refid="condition" />
+		<if test="orderByField != null and ''!=orderByField">
+			ORDER BY ${orderByField}
+			<if test="orderByField">
+				${orderBy}
+			</if>
+		</if>
+	</select>
+	<select id="selectByParams" resultMap="BaseResultMap"
+		parameterType="map">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bl_co_process WHERE 1=1
+		<include refid="condition" />
+	</select>
+
+	<select id="SelectListByVoBlCoProcess" resultMap="BlCoProcessModelMap"
+		parameterType="map">
+		select
+		<include refid="BlCoProcessModelMap_Column_List" />
+		from bl_co_process a
+		LEFT JOIN bas_brand b On a.brand_no=b.brand_no
+		LEFT JOIN bas_division c On a.division_no=c.division_no
+		LEFT JOIN bas_customer d ON a.customer_no=d.customer_no
+		LEFT JOIN bas_material e ON a.material_no=e.material_no
+		where 1=1
+		<if test="contractNo != null">
+			and a.contract_no=#{contractNo}
+		</if>
+		<if test="billLineStatus != null">
+			and a.bill_line_status=#{billLineStatus}
+		</if>
+		<if test="orderFormDate != null and  orderToDate !=null">
+			and a.order_date BETWEEN #{orderFormDate} and #{orderToDate}
+		</if>
+		<if test="orderFormDate != null and  orderToDate ==null">
+ 	 	 	<![CDATA[ and a.order_date >= #{orderFormDate}  ]]>
+		</if>
+		<if test="orderFormDate == null and  orderToDate !=null">
+ 	 	 	<![CDATA[ and a.order_date <= #{orderToDate}  ]]>
+		</if>
+		<if test="orderByField != null and ''!=orderByField">
+			ORDER BY ${orderByField}
+			<if test="orderByField">
+				${orderBy}
+			</if>
+		</if>
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		DELETE FROM bl_co_process
+		WHERE line_id = #{lineId,jdbcType=BIGINT}
+	</delete>
+	<delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.sd.dao.entity.BlCoProcess">
+		DELETE FROM bl_co_process
+		WHERE line_id = #{lineId,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.hc.scm.sd.dao.entity.BlCoProcess">
+		INSERT INTO bl_co_process (line_id, brand_no, division_no,
+		seq_no, bill_line_status, order_date,
+		deliver_date, contract_no, order_type,
+		order_no, material_no, customer_no,
+		size_no, size_qty, size_type_no,
+		unit_price, packing_qty, box_qty,
+		packing_type, point_no, bill_company,
+		process_result, creator, create_time,
+		modifier, modify_time, remarks
+		)
+		VALUES (#{lineId,jdbcType=BIGINT}, #{brandNo,jdbcType=VARCHAR},
+		#{divisionNo,jdbcType=VARCHAR},
+		#{seqNo,jdbcType=INTEGER}, #{billLineStatus,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE},
+		#{deliverDate,jdbcType=DATE}, #{contractNo,jdbcType=VARCHAR},
+		#{orderType,jdbcType=VARCHAR},
+		#{orderNo,jdbcType=VARCHAR}, #{materialNo,jdbcType=VARCHAR}, #{customerNo,jdbcType=VARCHAR},
+		#{sizeNo,jdbcType=VARCHAR}, #{sizeQty,jdbcType=INTEGER},
+		#{sizeTypeNo,jdbcType=VARCHAR},
+		#{unitPrice,jdbcType=DECIMAL}, #{packingQty,jdbcType=INTEGER}, #{boxQty,jdbcType=INTEGER},
+		#{packingType,jdbcType=VARCHAR}, #{pointNo,jdbcType=VARCHAR},
+		#{billCompany,jdbcType=VARCHAR},
+		#{processResult,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+		#{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP},
+		#{remarks,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.hc.scm.sd.dao.entity.BlCoProcess">
+		INSERT INTO bl_co_process
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="lineId != null">
+				line_id,
+			</if>
+			<if test="brandNo != null">
+				brand_no,
+			</if>
+			<if test="divisionNo != null">
+				division_no,
+			</if>
+			<if test="seqNo != null">
+				seq_no,
+			</if>
+			<if test="billLineStatus != null">
+				bill_line_status,
+			</if>
+			<if test="orderDate != null">
+				order_date,
+			</if>
+			<if test="deliverDate != null">
+				deliver_date,
+			</if>
+			<if test="contractNo != null">
+				contract_no,
+			</if>
+			<if test="orderType != null">
+				order_type,
+			</if>
+			<if test="orderNo != null">
+				order_no,
+			</if>
+			<if test="materialNo != null">
+				material_no,
+			</if>
+			<if test="customerNo != null">
+				customer_no,
+			</if>
+			<if test="sizeNo != null">
+				size_no,
+			</if>
+			<if test="sizeQty != null">
+				size_qty,
+			</if>
+			<if test="sizeTypeNo != null">
+				size_type_no,
+			</if>
+			<if test="unitPrice != null">
+				unit_price,
+			</if>
+			<if test="packingQty != null">
+				packing_qty,
+			</if>
+			<if test="boxQty != null">
+				box_qty,
+			</if>
+			<if test="packingType != null">
+				packing_type,
+			</if>
+			<if test="pointNo != null">
+				point_no,
+			</if>
+			<if test="billCompany != null">
+				bill_company,
+			</if>
+			<if test="processResult != null">
+				process_result,
+			</if>
+			<if test="creator != null">
+				creator,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="modifier != null">
+				modifier,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+			<if test="remarks != null">
+				remarks,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="lineId != null">
+				#{lineId,jdbcType=BIGINT},
+			</if>
+			<if test="brandNo != null">
+				#{brandNo,jdbcType=VARCHAR},
+			</if>
+			<if test="divisionNo != null">
+				#{divisionNo,jdbcType=VARCHAR},
+			</if>
+			<if test="seqNo != null">
+				#{seqNo,jdbcType=INTEGER},
+			</if>
+			<if test="billLineStatus != null">
+				#{billLineStatus,jdbcType=VARCHAR},
+			</if>
+			<if test="orderDate != null">
+				#{orderDate,jdbcType=DATE},
+			</if>
+			<if test="deliverDate != null">
+				#{deliverDate,jdbcType=DATE},
+			</if>
+			<if test="contractNo != null">
+				#{contractNo,jdbcType=VARCHAR},
+			</if>
+			<if test="orderType != null">
+				#{orderType,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null">
+				#{orderNo,jdbcType=VARCHAR},
+			</if>
+			<if test="materialNo != null">
+				#{materialNo,jdbcType=VARCHAR},
+			</if>
+			<if test="customerNo != null">
+				#{customerNo,jdbcType=VARCHAR},
+			</if>
+			<if test="sizeNo != null">
+				#{sizeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="sizeQty != null">
+				#{sizeQty,jdbcType=INTEGER},
+			</if>
+			<if test="sizeTypeNo != null">
+				#{sizeTypeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="unitPrice != null">
+				#{unitPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="packingQty != null">
+				#{packingQty,jdbcType=INTEGER},
+			</if>
+			<if test="boxQty != null">
+				#{boxQty,jdbcType=INTEGER},
+			</if>
+			<if test="packingType != null">
+				#{packingType,jdbcType=VARCHAR},
+			</if>
+			<if test="pointNo != null">
+				#{pointNo,jdbcType=VARCHAR},
+			</if>
+			<if test="billCompany != null">
+				#{billCompany,jdbcType=VARCHAR},
+			</if>
+			<if test="processResult != null">
+				#{processResult,jdbcType=VARCHAR},
+			</if>
+			<if test="creator != null">
+				#{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null">
+				#{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null">
+				#{remarks,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.sd.dao.entity.BlCoProcess">
+		UPDATE bl_co_process
+		<set>
+			<if test="brandNo != null">
+				brand_no = #{brandNo,jdbcType=VARCHAR},
+			</if>
+			<if test="divisionNo != null">
+				division_no = #{divisionNo,jdbcType=VARCHAR},
+			</if>
+			<if test="seqNo != null">
+				seq_no = #{seqNo,jdbcType=INTEGER},
+			</if>
+			<if test="billLineStatus != null">
+				bill_line_status = #{billLineStatus,jdbcType=VARCHAR},
+			</if>
+			<if test="orderDate != null">
+				order_date = #{orderDate,jdbcType=DATE},
+			</if>
+			<if test="deliverDate != null">
+				deliver_date = #{deliverDate,jdbcType=DATE},
+			</if>
+			<if test="contractNo != null">
+				contract_no = #{contractNo,jdbcType=VARCHAR},
+			</if>
+			<if test="orderType != null">
+				order_type = #{orderType,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null">
+				order_no = #{orderNo,jdbcType=VARCHAR},
+			</if>
+			<if test="materialNo != null">
+				material_no = #{materialNo,jdbcType=VARCHAR},
+			</if>
+			<if test="customerNo != null">
+				customer_no = #{customerNo,jdbcType=VARCHAR},
+			</if>
+			<if test="sizeNo != null">
+				size_no = #{sizeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="sizeQty != null">
+				size_qty = #{sizeQty,jdbcType=INTEGER},
+			</if>
+			<if test="sizeTypeNo != null">
+				size_type_no = #{sizeTypeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="unitPrice != null">
+				unit_price = #{unitPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="packingQty != null">
+				packing_qty = #{packingQty,jdbcType=INTEGER},
+			</if>
+			<if test="boxQty != null">
+				box_qty = #{boxQty,jdbcType=INTEGER},
+			</if>
+			<if test="packingType != null">
+				packing_type = #{packingType,jdbcType=VARCHAR},
+			</if>
+			<if test="pointNo != null">
+				point_no = #{pointNo,jdbcType=VARCHAR},
+			</if>
+			<if test="billCompany != null">
+				bill_company = #{billCompany,jdbcType=VARCHAR},
+			</if>
+			<if test="processResult != null">
+				process_result = #{processResult,jdbcType=VARCHAR},
+			</if>
+			<if test="creator != null">
+				creator = #{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null">
+				modifier = #{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null">
+				remarks = #{remarks,jdbcType=VARCHAR},
+			</if>
+		</set>
+		WHERE line_id = #{lineId,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.hc.scm.sd.dao.entity.BlCoProcess">
+		UPDATE bl_co_process
+		SET brand_no = #{brandNo,jdbcType=VARCHAR},
+		division_no = #{divisionNo,jdbcType=VARCHAR},
+		seq_no = #{seqNo,jdbcType=INTEGER},
+		bill_line_status = #{billLineStatus,jdbcType=VARCHAR},
+		order_date = #{orderDate,jdbcType=DATE},
+		deliver_date = #{deliverDate,jdbcType=DATE},
+		contract_no = #{contractNo,jdbcType=VARCHAR},
+		order_type = #{orderType,jdbcType=VARCHAR},
+		order_no = #{orderNo,jdbcType=VARCHAR},
+		material_no = #{materialNo,jdbcType=VARCHAR},
+		customer_no = #{customerNo,jdbcType=VARCHAR},
+		size_no = #{sizeNo,jdbcType=VARCHAR},
+		size_qty = #{sizeQty,jdbcType=INTEGER},
+		size_type_no = #{sizeTypeNo,jdbcType=VARCHAR},
+		unit_price = #{unitPrice,jdbcType=DECIMAL},
+		packing_qty = #{packingQty,jdbcType=INTEGER},
+		box_qty = #{boxQty,jdbcType=INTEGER},
+		packing_type = #{packingType,jdbcType=VARCHAR},
+		point_no = #{pointNo,jdbcType=VARCHAR},
+		bill_company = #{billCompany,jdbcType=VARCHAR},
+		process_result = #{processResult,jdbcType=VARCHAR},
+		creator = #{creator,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		modifier = #{modifier,jdbcType=VARCHAR},
+		modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+		remarks = #{remarks,jdbcType=VARCHAR}
+		WHERE line_id = #{lineId,jdbcType=BIGINT}
+	</update>
+</mapper>

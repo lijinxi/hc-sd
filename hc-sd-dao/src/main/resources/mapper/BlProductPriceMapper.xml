@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.sd.dao.mapper.BlProductPriceMapper">
+	<resultMap id="BaseResultMap" type="com.hc.scm.sd.dao.entity.BlProductPrice">
+		<id column="line_id" property="lineId" jdbcType="BIGINT" />
+		<result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+		<result column="bill_type_no" property="billTypeNo" jdbcType="VARCHAR" />
+		<result column="brand_no" property="brandNo" jdbcType="VARCHAR" />
+		<result column="brand_cname" property="brandCname" jdbcType="VARCHAR" />
+		<result column="division_no" property="divisionNo" jdbcType="VARCHAR" />
+		<result column="division_name" property="divisionName" jdbcType="VARCHAR" />
+		<result column="currency_no" property="currencyNo" jdbcType="VARCHAR" />
+		<result column="effective_date" property="effectiveDate"
+			jdbcType="DATE" />
+		<result column="bill_status" property="billStatus" jdbcType="VARCHAR" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="modifier" property="modifier" jdbcType="VARCHAR" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+		<result column="auditor" property="auditor" jdbcType="VARCHAR" />
+		<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		a.line_id, a.bill_no, a.bill_type_no, a.brand_no,b.brand_cname,a.division_no, a.currency_no,
+		a.effective_date,c.division_name,
+		a.bill_status, a.creator, a.create_time, a.modifier, a.modify_time, a.auditor,
+		a.audit_time, a.remarks
+	</sql>
+	<sql id="Base_Column_List_key">
+		line_id, bill_no, bill_type_no, brand_no, division_no, currency_no,
+		effective_date,
+		bill_status, creator, create_time, modifier, modify_time, auditor,
+		audit_time, remarks
+	</sql>
+	<sql id="condition">
+		<!-- 单据编号 -->
+		<if test="params!=null">
+		<if test="params.billNo !=null and ''!=params.billNo">
+			and a.bill_no = #{params.billNo}
+		</if>
+		<if test="params.billStatus !=null and ''!=params.billStatus">
+			and a.bill_status = #{params.billStatus}
+		</if>
+		<!-- 创建人 -->
+		<if test="params.creator!=null  and ''!=params.creator">
+			and a.creator = #{params.creator}
+		</if>
+		<!-- 审核人 -->
+		<if test="params.auditor!=null  and ''!=params.auditor">
+			and a.auditor = #{params.auditor}
+		</if>
+		<!-- 创建时间 -->
+		<if test="params.createTime1!=null  and params.createTime2 !=null ">
+			and DATE_FORMAT(a.create_time, '%Y-%m-%d') BETWEEN DATE_FORMAT(#{params.createTime1},'%Y-%m-%d') and DATE_FORMAT(#{params.createTime2},'%Y-%m-%d')
+		
+		</if>
+		<if test="params.createTime1 != null and  params.createTime2 ==null">
+ 	 	 	and <![CDATA[ and DATE_FORMAT(a.create_time, '%Y-%m-%d') >= DATE_FORMAT(#{params.createTime1}, '%Y-%m-%d')  ]]>
+		</if>
+		<if test="params.createTime1 == null and  params.createTime2 !=null">
+ 	 	 	and <![CDATA[ and DATE_FORMAT(a.create_time, '%Y-%m-%d') <= DATE_FORMAT(#{params.createTime2},'%Y-%m-%d') ]]>
+		</if>
+		
+		<!-- 审核时间 -->
+		<if test="params.auditTime1!=null  and params.auditTime2 !=null ">
+			and DATE_FORMAT(a.audit_time, '%Y-%m-%d') BETWEEN DATE_FORMAT(#{params.auditTime1},'%Y-%m-%d') and DATE_FORMAT(#{params.auditTime2},'%Y-%m-%d')
+			
+		</if>
+		<if test="params.auditTime1 != null and  params.auditTime2 ==null">
+ 	 	 	and  <![CDATA[ and DATE_FORMAT(a.audit_time, '%Y-%m-%d') >= DATE_FORMAT(#{params.auditTime1}, '%Y-%m-%d')  ]]>
+		</if>
+		<if test="params.auditTime1 == null and  params.auditTime2 !=null">
+		
+ 	 	 	and <![CDATA[ and DATE_FORMAT(a.audit_time, '%Y-%m-%d') <= DATE_FORMAT(#{params.auditTime2},'%Y-%m-%d') ]]>
+		</if>
+		
+		<!-- 生效时间 -->
+		<if test="params.xFromTime!=null  and params.xToTime !=null ">
+			and DATE_FORMAT(a.effective_date, '%Y-%m-%d') BETWEEN DATE_FORMAT(#{params.xFromTime},'%Y-%m-%d') and DATE_FORMAT(#{params.xToTime},'%Y-%m-%d')
+		</if>
+		<if test="params.xFromTime != null and  params.xToTime ==null">
+ 	 	 	and <![CDATA[ and DATE_FORMAT(a.effective_date, '%Y-%m-%d') >= DATE_FORMAT(#{params.xFromTime}, '%Y-%m-%d')  ]]>
+		</if>
+		<if test="params.xFromTime == null and  params.xToTime !=null">
+ 	 	 	and <![CDATA[ and DATE_FORMAT(a.effective_date, '%Y-%m-%d') <= DATE_FORMAT(#{params.xToTime},'%Y-%m-%d') ]]>
+		</if>
+		
+		<!-- 品牌 -->
+		<if test="params.brandNo != null and  params.brandNo !=null">
+			and a.brand_no = #{params.brandNo}
+		</if>
+		<!-- 币别 -->
+		<if test="params.currencyNo != null and  params.currencyNo !=null">
+			and a.currency_no = #{params.currencyNo}
+		</if>
+		</if>
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		SELECT
+		<include refid="Base_Column_List_key" />
+		FROM bl_product_price
+		WHERE line_id = #{lineId,jdbcType=BIGINT}
+	</select>
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) as s FROM bl_product_price WHERE 1=1
+		<include refid="condition" />
+	</select>
+	<select id="selectByPage" resultMap="BaseResultMap"
+		parameterType="map">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bl_product_price a 
+		LEFT JOIN bas_brand b On a.brand_no=b.brand_no
+		LEFT JOIN bas_division c On a.division_no=c.division_no
+		where 1=1
+		<include refid="condition" />
+		<if test="orderByField != null and ''!=orderByField">
+			ORDER BY ${orderByField}
+			<if test="orderByField">
+				${orderBy}
+			</if>
+		</if>
+	</select>
+	<select id="selectByParams" resultMap="BaseResultMap"
+		parameterType="map">
+		SELECT
+		<include refid="Base_Column_List_key" />
+		FROM bl_product_price  
+		where 1=1 and bill_status in(10,20)
+		<if test="params.billNo !=null and ''!=params.billNo">
+			and bill_no = #{params.billNo}
+		</if>
+		<if test="params.billTypeNo !=null and ''!=params.billTypeNo">
+			and bill_type_no = #{params.billTypeNo}
+		</if>
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		DELETE FROM bl_product_price
+		WHERE line_id = #{lineId,jdbcType=BIGINT}
+	</delete>
+	<delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.sd.dao.entity.BlProductPrice">
+		DELETE FROM bl_product_price
+		WHERE line_id = #{lineId,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.hc.scm.sd.dao.entity.BlProductPrice">
+		INSERT INTO bl_product_price (line_id, bill_no, bill_type_no,
+		brand_no, division_no, currency_no,
+		effective_date, bill_status, creator,
+		create_time, modifier, modify_time,
+		auditor, audit_time, remarks
+		)
+		VALUES (#{lineId,jdbcType=BIGINT}, #{billNo,jdbcType=VARCHAR},
+		#{billTypeNo,jdbcType=VARCHAR},
+		#{brandNo,jdbcType=VARCHAR}, #{divisionNo,jdbcType=VARCHAR}, #{currencyNo,jdbcType=VARCHAR},
+		#{effectiveDate,jdbcType=DATE}, #{billStatus,jdbcType=VARCHAR},
+		#{creator,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP},
+		#{auditor,jdbcType=VARCHAR}, #{auditTime,jdbcType=TIMESTAMP},
+		#{remarks,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.hc.scm.sd.dao.entity.BlProductPrice">
+		INSERT INTO bl_product_price
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="lineId != null">
+				line_id,
+			</if>
+			<if test="billNo != null">
+				bill_no,
+			</if>
+			<if test="billTypeNo != null">
+				bill_type_no,
+			</if>
+			<if test="brandNo != null">
+				brand_no,
+			</if>
+			<if test="divisionNo != null">
+				division_no,
+			</if>
+			<if test="currencyNo != null">
+				currency_no,
+			</if>
+			<if test="effectiveDate != null">
+				effective_date,
+			</if>
+			<if test="billStatus != null">
+				bill_status,
+			</if>
+			<if test="creator != null">
+				creator,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="modifier != null">
+				modifier,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+			<if test="auditor != null">
+				auditor,
+			</if>
+			<if test="auditTime != null">
+				audit_time,
+			</if>
+			<if test="remarks != null">
+				remarks,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="lineId != null">
+				#{lineId,jdbcType=BIGINT},
+			</if>
+			<if test="billNo != null">
+				#{billNo,jdbcType=VARCHAR},
+			</if>
+			<if test="billTypeNo != null">
+				#{billTypeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="brandNo != null">
+				#{brandNo,jdbcType=VARCHAR},
+			</if>
+			<if test="divisionNo != null">
+				#{divisionNo,jdbcType=VARCHAR},
+			</if>
+			<if test="currencyNo != null">
+				#{currencyNo,jdbcType=VARCHAR},
+			</if>
+			<if test="effectiveDate != null">
+				#{effectiveDate,jdbcType=DATE},
+			</if>
+			<if test="billStatus != null">
+				#{billStatus,jdbcType=VARCHAR},
+			</if>
+			<if test="creator != null">
+				#{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null">
+				#{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="auditor != null">
+				#{auditor,jdbcType=VARCHAR},
+			</if>
+			<if test="auditTime != null">
+				#{auditTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null">
+				#{remarks,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.sd.dao.entity.BlProductPrice">
+		UPDATE bl_product_price
+		<set>
+			<if test="billNo != null">
+				bill_no = #{billNo,jdbcType=VARCHAR},
+			</if>
+			<if test="billTypeNo != null">
+				bill_type_no = #{billTypeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="brandNo != null">
+				brand_no = #{brandNo,jdbcType=VARCHAR},
+			</if>
+			<if test="divisionNo != null">
+				division_no = #{divisionNo,jdbcType=VARCHAR},
+			</if>
+			<if test="currencyNo != null">
+				currency_no = #{currencyNo,jdbcType=VARCHAR},
+			</if>
+			<if test="effectiveDate != null">
+				effective_date = #{effectiveDate,jdbcType=DATE},
+			</if>
+			<if test="billStatus != null">
+				bill_status = #{billStatus,jdbcType=VARCHAR},
+			</if>
+			<if test="creator != null">
+				creator = #{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null">
+				modifier = #{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="auditor != null">
+				auditor = #{auditor,jdbcType=VARCHAR},
+			</if>
+			<if test="auditTime != null">
+				audit_time = #{auditTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null">
+				remarks = #{remarks,jdbcType=VARCHAR},
+			</if>
+		</set>
+		WHERE line_id = #{lineId,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.hc.scm.sd.dao.entity.BlProductPrice">
+		UPDATE bl_product_price
+		SET bill_no = #{billNo,jdbcType=VARCHAR},
+		bill_type_no = #{billTypeNo,jdbcType=VARCHAR},
+		brand_no = #{brandNo,jdbcType=VARCHAR},
+		division_no = #{divisionNo,jdbcType=VARCHAR},
+		currency_no = #{currencyNo,jdbcType=VARCHAR},
+		effective_date = #{effectiveDate,jdbcType=DATE},
+		bill_status = #{billStatus,jdbcType=VARCHAR},
+		creator = #{creator,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		modifier = #{modifier,jdbcType=VARCHAR},
+		modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+		auditor = #{auditor,jdbcType=VARCHAR},
+		audit_time = #{auditTime,jdbcType=TIMESTAMP},
+		remarks = #{remarks,jdbcType=VARCHAR}
+		WHERE line_id = #{lineId,jdbcType=BIGINT}
+	</update>
+</mapper>

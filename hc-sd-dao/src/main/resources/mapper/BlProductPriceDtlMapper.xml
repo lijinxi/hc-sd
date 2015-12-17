@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.sd.dao.mapper.BlProductPriceDtlMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.sd.dao.entity.BlProductPriceDtl" >
+    <id column="line_id" property="lineId" jdbcType="BIGINT" />
+    <result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+    <result column="unit_no" property="unitNo" jdbcType="VARCHAR" />
+    <result column="unit_price" property="unitPrice" jdbcType="DECIMAL" />
+    <result column="division_no" property="divisionNo" jdbcType="VARCHAR" />
+  </resultMap>
+  
+	<resultMap id="BlProductPriceDtlModelMap" type="com.hc.scm.sd.dao.model.BlProductPriceDtlModel" >
+	 	<id column="line_id" property="lineId" jdbcType="VARCHAR" />
+	 	<result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+	 	<result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+	 	<result column="material_name" property="materialName" jdbcType="VARCHAR" />
+	 	<result column="category_name" property="categoryName" jdbcType="VARCHAR" />
+	 	<result column="gender_type" property="genderType" jdbcType="VARCHAR" />
+	 	<result column="unit_name" property="unitName" jdbcType="VARCHAR" />
+	 	<result column="division_no" property="divisionNo" jdbcType="VARCHAR" />
+	 	<result column="unit_price" property="unitPrice" jdbcType="VARCHAR" />
+	 	<result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+	</resultMap>
+  <sql id="Base_Column_List" >
+    line_id, bill_no, order_no, material_no, unit_no, unit_price, division_no
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+     <if test="null!=params.billNo and ''!=params.billNo">
+        and	bill_no = #{params.billNo}
+      </if>
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bl_product_price_dtl
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bl_product_price_dtl WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bl_product_price_dtl WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bl_product_price_dtl WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  
+    <select id="selectByMaterial_no" resultType="hashmap" parameterType="java.lang.String" >
+	select a.material_no as materialNo, trim(TRAILING '\r\n' FROM a.material_name) as materialName,CONCAT(a.category_no,' ', category_name) categoryName,
+	a.gender_type as genderType,c.unit_no as unitNo
+	from bas_material a,bas_category b,bas_unit c where a.category_no=b.category_no
+	and a.normal_unit=c.unit_no and a.material_no=#{materialNo,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectBlProductpriceList" resultType="hashmap" parameterType="map" >
+	 select a.material_no as materialNo,b.material_name as materialName ,CONCAT(b.category_no,' ', category_name) categoryName,
+	b.gender_type as genderType,a.unit_no as unitNo, a.division_no as divisionNo,a.unit_price as unitPrice,
+	a.order_no as orderNo,a.bill_no as billNo,a.line_id as lineId
+	from bl_product_price_dtl a, bas_material b, bas_category c  where 
+	a.material_no=b.material_no and b.category_no=c.category_no
+	 <include refid="condition" />
+	  <if test="orderByField != null and ''!=orderByField" >
+	  ORDER BY ${orderByField}
+	  <if test="orderByField" >
+	    ${orderBy}
+	  </if>
+	</if>
+  </select>
+  
+	<sql id="BlProductPriceDtlModelMap_Column_List" >
+		a.material_no as materialNo,b.material_name as materialName ,CONCAT(b.category_no,' ', category_name) categoryName,
+		b.gender_type as genderType,d.unit_name as unitName, a.division_no as divisionNo,a.unit_price as unitPrice,
+		a.order_no as orderNo,a.bill_no as billNo,a.line_id as lineId
+	 </sql>
+	<!-- 影响其他模块，注释
+ 	<select id="SelectListByVoBlPPriceDtl" resultMap="BlProductPriceDtlModelMap" parameterType="map">
+ 		 select <include refid="BlProductPriceDtlModelMap_Column_List" /> 
+ 		 	from bl_product_price_dtl a, bas_material b, bas_category c, bas_unit d where 
+			a.material_no=b.material_no and b.category_no=c.category_no and a.unit_no=d.unit_no
+ 	 	<if test="lineId != null" >
+ 	 	 	and line_id=#{lineId}
+ 	 	</if>
+ 	 	<if test="billNo != null" >
+ 	 	 	and bill_no=#{billNo}
+ 	 	</if>
+ 	 	<if test="materialNo != null" >
+ 	 	 	and material_no=#{materialNo}
+ 	 	</if>
+ 	 	<if test="materialName != null" >
+ 	 	 	and material_name=#{materialName}
+ 	 	</if>
+ 	 	<if test="categoryName != null" >
+ 	 	 	and category_name=#{categoryName}
+ 	 	</if>
+ 	 	<if test="genderType != null" >
+ 	 	 	and gender_type=#{genderType}
+ 	 	</if>
+ 	 	<if test="unitName != null" >
+ 	 	 	and unit_name=#{unitName}
+ 	 	</if>
+ 	 	<if test="divisionNo != null" >
+ 	 	 	and division_no=#{divisionNo}
+ 	 	</if>
+ 	 	<if test="unitPrice != null" >
+ 	 	 	and unit_price=#{unitPrice}
+ 	 	</if>
+ 	 	<if test="orderNo != null" >
+ 	 	 	and order_no=#{orderNo}
+ 	 	</if>
+		<if test="orderByField != null and ''!=orderByField" >
+		  ORDER BY ${orderByField}
+		  <if test="orderByField" >
+		    ${orderBy}
+		  </if>
+		</if>
+ 	</select> -->   
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM bl_product_price_dtl
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.sd.dao.entity.BlProductPriceDtl" >
+    DELETE FROM bl_product_price_dtl
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.sd.dao.entity.BlProductPriceDtl" >
+    INSERT INTO bl_product_price_dtl (line_id, bill_no, order_no, 
+      material_no, unit_no, unit_price, 
+      division_no)
+    VALUES (#{lineId,jdbcType=BIGINT}, #{billNo,jdbcType=VARCHAR}, #{orderNo,jdbcType=INTEGER}, 
+      #{materialNo,jdbcType=VARCHAR}, #{unitNo,jdbcType=VARCHAR}, #{unitPrice,jdbcType=DECIMAL}, 
+      #{divisionNo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.sd.dao.entity.BlProductPriceDtl" >
+    INSERT INTO bl_product_price_dtl
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lineId != null" >
+        line_id,
+      </if>
+      <if test="billNo != null" >
+        bill_no,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="materialNo != null" >
+        material_no,
+      </if>
+      <if test="unitNo != null" >
+        unit_no,
+      </if>
+      <if test="unitPrice != null" >
+        unit_price,
+      </if>
+      <if test="divisionNo != null" >
+        division_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lineId != null" >
+        #{lineId,jdbcType=BIGINT},
+      </if>
+      <if test="billNo != null" >
+        #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="materialNo != null" >
+        #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="unitNo != null" >
+        #{unitNo,jdbcType=VARCHAR},
+      </if>
+      <if test="unitPrice != null" >
+        #{unitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="divisionNo != null" >
+        #{divisionNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.sd.dao.entity.BlProductPriceDtl" >
+    UPDATE bl_product_price_dtl
+    <set >
+      <if test="billNo != null" >
+        bill_no = #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="materialNo != null" >
+        material_no = #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="unitNo != null" >
+        unit_no = #{unitNo,jdbcType=VARCHAR},
+      </if>
+      <if test="unitPrice != null" >
+        unit_price = #{unitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="divisionNo != null" >
+        division_no = #{divisionNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.sd.dao.entity.BlProductPriceDtl" >
+    UPDATE bl_product_price_dtl
+    SET bill_no = #{billNo,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      material_no = #{materialNo,jdbcType=VARCHAR},
+      unit_no = #{unitNo,jdbcType=VARCHAR},
+      unit_price = #{unitPrice,jdbcType=DECIMAL},
+      division_no = #{divisionNo,jdbcType=VARCHAR}
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.sd.dao.mapper.BlCoDtlMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.sd.dao.entity.BlCoDtl" >
+    <id column="line_id" property="lineId" jdbcType="BIGINT" />
+    <result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+    <result column="size_no" property="sizeNo" jdbcType="VARCHAR" />
+    <result column="size_qty" property="sizeQty" jdbcType="INTEGER" />
+    <result column="seq_no" property="seqNo" jdbcType="INTEGER" />
+    <result column="size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="unit_price" property="unitPrice" jdbcType="DECIMAL" />
+    <result column="packing_qty" property="packingQty" jdbcType="INTEGER" />
+    <result column="box_qty" property="boxQty" jdbcType="INTEGER" />
+    <result column="packing_type" property="packingType" jdbcType="VARCHAR" />
+    <result column="deliver_date" property="deliverDate" jdbcType="DATE" />
+    <result column="point_no" property="pointNo" jdbcType="VARCHAR" />
+    <result column="store_no" property="storeNo" jdbcType="VARCHAR" />
+    <result column="auditor" property="auditor" jdbcType="VARCHAR" />
+    <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <!-- luojw+ 2015/4/15 增加“物料编号”联动-->
+  <resultMap id="BlCoDtlModelMap" type="com.hc.scm.sd.dao.model.BlCoDtlModel" >
+	<id column="line_id" property="lineId" jdbcType="BIGINT" />
+    <result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+    <result column="material_name" property="materialName" jdbcType="VARCHAR" />
+    <result column="size_no" property="sizeNo" jdbcType="VARCHAR" />
+    <result column="size_qty" property="sizeQty" jdbcType="INTEGER" />
+    <result column="seq_no" property="seqNo" jdbcType="INTEGER" />
+    <result column="size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="unit_price" property="unitPrice" jdbcType="DECIMAL" />
+    <result column="packing_qty" property="packingQty" jdbcType="INTEGER" />
+    <result column="box_qty" property="boxQty" jdbcType="INTEGER" />
+    <result column="packing_type" property="packingType" jdbcType="VARCHAR" />
+    <result column="deliver_date" property="deliverDate" jdbcType="DATE" />
+    <result column="point_no" property="pointNo" jdbcType="VARCHAR" />
+    <result column="store_no" property="storeNo" jdbcType="VARCHAR" />
+    <result column="auditor" property="auditor" jdbcType="VARCHAR" />
+    <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+ </resultMap>
+	
+  <sql id="Base_Column_List" >
+    line_id, bill_no, order_no, material_no, size_no, size_qty, seq_no, size_type_no, 
+    status, unit_price, packing_qty, box_qty, packing_type, deliver_date, point_no, store_no, 
+    auditor, audit_time
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+        <if test="null!=params.billNo and ''!=params.billNo">
+        and	bill_no = #{params.billNo}
+      </if>
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bl_co_dtl
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bl_co_dtl WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bl_co_dtl WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bl_co_dtl WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM bl_co_dtl
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.sd.dao.entity.BlCoDtl" >
+    DELETE FROM bl_co_dtl
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.sd.dao.entity.BlCoDtl" >
+    INSERT INTO bl_co_dtl (line_id, bill_no, order_no, 
+      material_no, size_no, size_qty, 
+      seq_no, size_type_no, status, 
+      unit_price, packing_qty, box_qty, 
+      packing_type, deliver_date, point_no, 
+      store_no, auditor, audit_time
+      )
+    VALUES (#{lineId,jdbcType=BIGINT}, #{billNo,jdbcType=VARCHAR}, #{orderNo,jdbcType=INTEGER}, 
+      #{materialNo,jdbcType=VARCHAR}, #{sizeNo,jdbcType=VARCHAR}, #{sizeQty,jdbcType=INTEGER}, 
+      #{seqNo,jdbcType=INTEGER}, #{sizeTypeNo,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{unitPrice,jdbcType=DECIMAL}, #{packingQty,jdbcType=INTEGER}, #{boxQty,jdbcType=INTEGER}, 
+      #{packingType,jdbcType=VARCHAR}, #{deliverDate,jdbcType=DATE}, #{pointNo,jdbcType=VARCHAR}, 
+      #{storeNo,jdbcType=VARCHAR}, #{auditor,jdbcType=VARCHAR}, #{auditTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.sd.dao.entity.BlCoDtl" >
+    INSERT INTO bl_co_dtl
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lineId != null" >
+        line_id,
+      </if>
+      <if test="billNo != null" >
+        bill_no,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="materialNo != null" >
+        material_no,
+      </if>
+      <if test="sizeNo != null" >
+        size_no,
+      </if>
+      <if test="sizeQty != null" >
+        size_qty,
+      </if>
+      <if test="seqNo != null" >
+        seq_no,
+      </if>
+      <if test="sizeTypeNo != null" >
+        size_type_no,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="unitPrice != null" >
+        unit_price,
+      </if>
+      <if test="packingQty != null" >
+        packing_qty,
+      </if>
+      <if test="boxQty != null" >
+        box_qty,
+      </if>
+      <if test="packingType != null" >
+        packing_type,
+      </if>
+      <if test="deliverDate != null" >
+        deliver_date,
+      </if>
+      <if test="pointNo != null" >
+        point_no,
+      </if>
+      <if test="storeNo != null" >
+        store_no,
+      </if>
+      <if test="auditor != null" >
+        auditor,
+      </if>
+      <if test="auditTime != null" >
+        audit_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lineId != null" >
+        #{lineId,jdbcType=BIGINT},
+      </if>
+      <if test="billNo != null" >
+        #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="materialNo != null" >
+        #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeNo != null" >
+        #{sizeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeQty != null" >
+        #{sizeQty,jdbcType=INTEGER},
+      </if>
+      <if test="seqNo != null" >
+        #{seqNo,jdbcType=INTEGER},
+      </if>
+      <if test="sizeTypeNo != null" >
+        #{sizeTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="unitPrice != null" >
+        #{unitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="packingQty != null" >
+        #{packingQty,jdbcType=INTEGER},
+      </if>
+      <if test="boxQty != null" >
+        #{boxQty,jdbcType=INTEGER},
+      </if>
+      <if test="packingType != null" >
+        #{packingType,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverDate != null" >
+        #{deliverDate,jdbcType=DATE},
+      </if>
+      <if test="pointNo != null" >
+        #{pointNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeNo != null" >
+        #{storeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="auditor != null" >
+        #{auditor,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.sd.dao.entity.BlCoDtl" >
+    UPDATE bl_co_dtl
+    <set >
+      <if test="billNo != null" >
+        bill_no = #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="materialNo != null" >
+        material_no = #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeNo != null" >
+        size_no = #{sizeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeQty != null" >
+        size_qty = #{sizeQty,jdbcType=INTEGER},
+      </if>
+      <if test="seqNo != null" >
+        seq_no = #{seqNo,jdbcType=INTEGER},
+      </if>
+      <if test="sizeTypeNo != null" >
+        size_type_no = #{sizeTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="unitPrice != null" >
+        unit_price = #{unitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="packingQty != null" >
+        packing_qty = #{packingQty,jdbcType=INTEGER},
+      </if>
+      <if test="boxQty != null" >
+        box_qty = #{boxQty,jdbcType=INTEGER},
+      </if>
+      <if test="packingType != null" >
+        packing_type = #{packingType,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverDate != null" >
+        deliver_date = #{deliverDate,jdbcType=DATE},
+      </if>
+      <if test="pointNo != null" >
+        point_no = #{pointNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeNo != null" >
+        store_no = #{storeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="auditor != null" >
+        auditor = #{auditor,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.sd.dao.entity.BlCoDtl" >
+    UPDATE bl_co_dtl
+    SET bill_no = #{billNo,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      material_no = #{materialNo,jdbcType=VARCHAR},
+      size_no = #{sizeNo,jdbcType=VARCHAR},
+      size_qty = #{sizeQty,jdbcType=INTEGER},
+      seq_no = #{seqNo,jdbcType=INTEGER},
+      size_type_no = #{sizeTypeNo,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      unit_price = #{unitPrice,jdbcType=DECIMAL},
+      packing_qty = #{packingQty,jdbcType=INTEGER},
+      box_qty = #{boxQty,jdbcType=INTEGER},
+      packing_type = #{packingType,jdbcType=VARCHAR},
+      deliver_date = #{deliverDate,jdbcType=DATE},
+      point_no = #{pointNo,jdbcType=VARCHAR},
+      store_no = #{storeNo,jdbcType=VARCHAR},
+      auditor = #{auditor,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP}
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+  
+  <!-- Vo查询的Mapper xml自动生成，请自行调试修改使用。(特别注意resultMap的jdbcType及查询的表名，联表查询请添加表别名前缀)-->
+  	<resultMap id="BlCoDtlModelSizeMap" type="com.hc.scm.sd.dao.model.BlCoDtlModel" extends="RowColWrapModelMap">
+ 	 	<id column="bill_no" property="billNo" jdbcType="VARCHAR" />
+ 	 	<result column="order_no" property="orderNo" jdbcType="INTEGER" />
+ 	 	<result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+ 	 	<result column="size_no" property="sizeNo" jdbcType="VARCHAR" />
+ 	 	<result column="size_qty" property="sizeQty" jdbcType="INTEGER" />
+ 	 	<result column="seq_no" property="seqNo" jdbcType="INTEGER" />
+ 	 	<result column="size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+ 	 	<result column="status" property="status" jdbcType="VARCHAR" />
+ 	 	<result column="unit_price" property="unitPrice" jdbcType="DECIMAL" />
+ 	 	<result column="packing_qty" property="packingQty" jdbcType="INTEGER" />
+ 	 	<result column="box_qty" property="boxQty" jdbcType="INTEGER" />
+ 	 	<result column="packing_type" property="packingType" jdbcType="VARCHAR" />
+ 	 	<result column="deliver_date" property="deliverDate" jdbcType="TIMESTAMP" />
+ 	 	<result column="point_no" property="pointNo" jdbcType="VARCHAR" />
+ 	 	<result column="store_no" property="storeNo" jdbcType="VARCHAR" />
+ 	 	<result column="auditor" property="auditor" jdbcType="VARCHAR" />
+ 	 	<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+ 	 	<result column="material_code" property="materialCode" jdbcType="VARCHAR" />
+ 	 	<result column="material_name" property="materialName" jdbcType="VARCHAR" />
+ 	</resultMap>
+ 	
+ 	<resultMap id="RowColWrapModelMap" type="com.hc.scm.common.model.RowColWrapModel" >
+ 	 	<result column="f1" property="f1" jdbcType="VARCHAR" />
+ 	 	<result column="f2" property="f2" jdbcType="VARCHAR" />
+ 	 	<result column="f3" property="f3" jdbcType="VARCHAR" />
+ 	 	<result column="f4" property="f4" jdbcType="VARCHAR" />
+ 	 	<result column="f5" property="f5" jdbcType="VARCHAR" />
+ 	 	<result column="f6" property="f6" jdbcType="VARCHAR" />
+ 	 	<result column="f7" property="f7" jdbcType="VARCHAR" />
+ 	 	<result column="f8" property="f8" jdbcType="VARCHAR" />
+ 	 	<result column="f9" property="f9" jdbcType="VARCHAR" />
+ 	 	<result column="f10" property="f10" jdbcType="VARCHAR" />
+ 	 	<result column="f11" property="f11" jdbcType="VARCHAR" />
+ 	 	<result column="f12" property="f12" jdbcType="VARCHAR" />
+ 	 	<result column="f13" property="f13" jdbcType="VARCHAR" />
+ 	 	<result column="f14" property="f14" jdbcType="VARCHAR" />
+ 	 	<result column="f15" property="f15" jdbcType="VARCHAR" />
+ 	 	<result column="f16" property="f16" jdbcType="VARCHAR" />
+ 	 	<result column="f17" property="f17" jdbcType="VARCHAR" />
+ 	 	<result column="f18" property="f18" jdbcType="VARCHAR" />
+ 	 	<result column="f19" property="f19" jdbcType="VARCHAR" />
+ 	 	<result column="f20" property="f20" jdbcType="VARCHAR" />
+ 	</resultMap>
+
+ 	<select id="baseSelectListByVo" resultMap="BlCoDtlModelSizeMap" parameterType="map">
+ 		 select t1.bill_no, t1.material_no, t1.size_type_no, 
+    		t1.status, t1.unit_price, t1.packing_qty, t1.box_qty, t1.packing_type, t1.deliver_date, t1.point_no,
+ 		 	f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,
+ 		 	t3.material_code,t3.material_name from bl_co_dtl t1 
+			inner join (
+			  select size_type_no,
+			    max(if(order_no='1',size_qty,'0')) AS f1,
+			    max(if(order_no='2',size_qty,'0')) AS f2,
+			    max(if(order_no='3',size_qty,0)) AS f3,
+			    max(if(order_no='4',size_qty,0)) AS f4,
+			    max(if(order_no='5',size_qty,0)) AS f5,
+			    max(if(order_no='6',size_qty,0)) AS f6,
+			    max(if(order_no='7',size_qty,0)) AS f7,
+			    max(if(order_no='8',size_qty,0)) AS f8,    
+			    max(if(order_no='9',size_qty,0)) AS f9,
+			    max(if(order_no='10',size_qty,0)) AS f10,
+			    max(if(order_no='11',size_qty,0)) AS f11,
+			    max(if(order_no='12',size_qty,0)) AS f12,
+			    max(if(order_no='13',size_qty,0)) AS f13,
+			    max(if(order_no='14',size_qty,0)) AS f14,
+			    max(if(order_no='15',size_qty,0)) AS f15,
+			    max(if(order_no='16',size_qty,0)) AS f16,     
+			    max(if(order_no='17',size_qty,0)) AS f17,
+			    max(if(order_no='18',size_qty,0)) AS f18,
+			    max(if(order_no='19',size_qty,0)) AS f19,
+			    max(if(order_no='20',size_qty,0)) AS f20
+			     from(
+			    select a.bill_no, a.material_no,a.size_type_no, a.size_qty, a.size_no,b.size_name,b.order_no from bl_co_dtl a
+			    inner join bas_size b on a.size_no=b.size_no
+			    where a.bill_no=#{billNo}
+			  ) s group by size_type_no 
+			) t2 on t1.size_type_no=t2.size_type_no
+			inner join bas_material t3 on t1.material_no=t3.material_no
+			where t1.bill_no=#{billNo}
+      group by  t1.bill_no, t1.material_no, t1.size_type_no, 
+       t1.status, t1.unit_price, t1.packing_qty, t1.box_qty, t1.packing_type, t1.deliver_date, t1.point_no,
+ 		   f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,
+ 		   t3.material_code,t3.material_name	
+ 		
+ 	</select>
+ 	
+ 	<resultMap id="BlCoMaterialModelMap" type="com.hc.scm.sd.dao.model.BlCoMaterialModel"  extends="RowColWrapModelMap">
+ 	 	<id column="material_no" property="materialNo" jdbcType="VARCHAR" />
+ 	 	<result column="material_code" property="materialCode" jdbcType="VARCHAR" />
+ 	 	<result column="material_name" property="materialName" jdbcType="VARCHAR" />
+ 	 	<result column="size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+ 	</resultMap>
+
+ 	<select id="SelectListByVoBlCoMaterial" resultMap="BlCoMaterialModelMap" parameterType="map">
+ 		 select material_no,material_code,material_name,size_type_no,
+			    max(if(order_no='1',size_name,'0')) AS f1,
+			    max(if(order_no='2',size_name,'0')) AS f2,
+			    max(if(order_no='3',size_name,0)) AS f3,
+			    max(if(order_no='4',size_name,0)) AS f4,
+			    max(if(order_no='5',size_name,0)) AS f5,
+			    max(if(order_no='6',size_name,0)) AS f6,
+			    max(if(order_no='7',size_name,0)) AS f7,
+			    max(if(order_no='8',size_name,0)) AS f8,    
+			    max(if(order_no='9',size_name,0)) AS f9,
+			    max(if(order_no='10',size_name,0)) AS f10,
+			    max(if(order_no='11',size_name,0)) AS f11,
+			    max(if(order_no='12',size_name,0)) AS f12,
+			    max(if(order_no='13',size_name,0)) AS f13,
+			    max(if(order_no='14',size_name,0)) AS f14,
+			    max(if(order_no='15',size_name,0)) AS f15,
+			    max(if(order_no='16',size_name,0)) AS f16,     
+			    max(if(order_no='17',size_name,0)) AS f17,
+			    max(if(order_no='18',size_name,0)) AS f18,
+			    max(if(order_no='19',size_name,0)) AS f19,
+			    max(if(order_no='20',size_name,0)) AS f20
+			   from (
+			  select a.material_no,a.material_code,a.material_name,b.size_no,c.size_name,c.order_no,c.size_type_no from bas_material a
+			  inner join bas_material_size b
+			  on a.material_no=b.material_no
+			  inner join bas_size c on b.size_no=c.size_no
+			  where 1=1
+			  <if test="materialNo != null" >
+		        and a.material_no in(${materialNo})
+		      </if>
+		       
+	) tmp  group by tmp.material_no
+ </select>
+ 
+	 <!-- Vo查询sizeTypeNo的尺码表头横排  -->
+  	<resultMap id="BlCoBasSizeModelMap" type="com.hc.scm.sd.dao.model.BlCoBasSizeModel" extends="RowColWrapModelMap" >
+ 	 	<result column="size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+ 	</resultMap>
+
+ 	<select id="SelectListByVoBlCoBasSizeModel" resultMap="BlCoBasSizeModelMap" parameterType="map">
+ 		select size_type_no,
+		    max(if(order_no='1',size_name,'0')) AS f1,
+		    max(if(order_no='2',size_name,'0')) AS f2,
+		    max(if(order_no='3',size_name,0)) AS f3,
+		    max(if(order_no='4',size_name,0)) AS f4,
+		    max(if(order_no='5',size_name,0)) AS f5,
+		    max(if(order_no='6',size_name,0)) AS f6,
+		    max(if(order_no='7',size_name,0)) AS f7,
+		    max(if(order_no='8',size_name,0)) AS f8,    
+		    max(if(order_no='9',size_name,0)) AS f9,
+		    max(if(order_no='10',size_name,0)) AS f10,
+		    max(if(order_no='11',size_name,0)) AS f11,
+		    max(if(order_no='12',size_name,0)) AS f12,
+		    max(if(order_no='13',size_name,0)) AS f13,
+		    max(if(order_no='14',size_name,0)) AS f14,
+		    max(if(order_no='15',size_name,0)) AS f15,
+		    max(if(order_no='16',size_name,0)) AS f16,     
+		    max(if(order_no='17',size_name,0)) AS f17,
+		    max(if(order_no='18',size_name,0)) AS f18,
+		    max(if(order_no='19',size_name,0)) AS f19,
+		    max(if(order_no='20',size_name,0)) AS f20
+		   from bas_size where 1=1
+		    <if test="sizeTypeNo != null" >
+	 	 	 	and size_type_no in(${sizeTypeNo})
+	 	 	</if>
+	 	 	<if test="materialNo != null" >
+	 	 	 	and size_type_no in (select size_type_no from bas_material where material_no in(${materialNo}))
+	 	 	</if>
+		   group by size_type_no
+ 	</select>   
+ 
+</mapper>
